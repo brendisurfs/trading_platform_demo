@@ -58,14 +58,15 @@ defmodule TradingPlatform do
   end
 end
 
-pid = spawn(TradingPlatform, :start, [])
-Process.sleep(1000)
-send(pid, {:buy, "PTON", 100})
-send(pid, {:buy, "SG", 230})
-send(pid, {:buy, "CHWY", 56})
-send(pid, {:sell, "PTON", 100})
-send(pid, {:close, "PTON", 100})
-Process.sleep(1000)
-send(pid, {:buy, "NVDA", 150})
-send(pid, {:close, "SG", 230})
-Process.sleep(1000)
+# Testing stuff.
+# pid = spawn(TradingPlatform, :start, [])
+# Process.sleep(1000)
+# send(pid, {:buy, "PTON", 100})
+# send(pid, {:buy, "SG", 230})
+# send(pid, {:buy, "CHWY", 56})
+# send(pid, {:sell, "PTON", 100})
+# send(pid, {:close, "PTON", 100})
+# Process.sleep(1000)
+# send(pid, {:buy, "NVDA", 150})
+# send(pid, {:close, "SG", 230})
+# Process.sleep(1000)
