@@ -25,6 +25,18 @@ defmodule Portfolio do
     %__MODULE__{capital: capital, equity: 0.0, positions: %{}}
   end
 
+  def place_buy_order(portfolio, symbol, price, qty) do
+    position = Position.new(symbol, price, qty, :long)
+    new_positions = Map.put(portfolio[:positions], symbol, position)
+    %{portfolio | positions: new_positions}
+  end
+
+  def place_sell_order(portfolio, symbol, price, qty) do
+    position = Position.new(symbol, price, qty, :short)
+    new_positions = Map.put(portfolio[:positions], symbol, position)
+    %{portfolio | positions: new_positions}
+  end
+
   @doc """
     adds a position to the Portfolio
 
@@ -45,18 +57,19 @@ defmodule Portfolio do
   end
 
   @doc """
-  Removes a position from the Portfolio.
+  "Closes" a position in Portfolio.
 
   ## Parameters:
 
   `portfolio`: the Portfolio where the positions are held (Portfolio).
   `symbol`: the ticker symbol belonging to the position we want to remove (String or atom).
   """
-  @spec remove_position(portfolio :: t(), symbol :: String.t()) :: term()
+  @spec close_position(portfolio :: t(), symbol :: String.t()) :: term()
 
   # TODO: Remove Position 
-  def remove_position(portfolio, symbol) do
-    IO.puts("Todo: remove position")
+  def close_position(portfolio, symbol) do
+    {_, new_positions} = Map.pop(portfolio[:positions], symbol)
+    Map.replace(portfolio, :positions, new_positions)
   end
 
   def fetch(term, key), do: Map.fetch(term, key)

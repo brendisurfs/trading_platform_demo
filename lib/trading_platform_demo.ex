@@ -5,7 +5,6 @@ defmodule TradingPlatform do
   """
 
   require Logger
-  require Position
   require Portfolio
 
   @type message ::
@@ -33,20 +32,17 @@ defmodule TradingPlatform do
       # Receive a buy event
       {:buy, symbol, qty} ->
         Logger.info("BUY #{symbol} #{qty} @ $#{price}")
-        new_position = Position.new(symbol, price, qty, :long)
 
         portfolio
-        |> Portfolio.add_position(new_position)
+        |> Portfolio.place_buy_order(symbol, price, qty)
         |> event_loop()
 
       # Receive a sell event
       {:sell, symbol, qty} ->
         Logger.info("SELL #{symbol} #{qty} @ $#{price}")
 
-        new_position = Position.new(symbol, price, qty, :short)
-
         portfolio
-        |> Portfolio.add_position(new_position)
+        |> Portfolio.place_sell_order(symbol, price, qty)
         |> event_loop()
 
       # Receive a close event
@@ -55,9 +51,8 @@ defmodule TradingPlatform do
 
         case Map.fetch(portfolio[:positions], symbol) do
           # For now, we just pop. will implement full portfolio balancing.
-          {:ok, position} ->
-            {_, new_positions} = Map.pop(portfolio[:positions], position)
-            Map.replace(portfolio, :positions, new_positions) |> event_loop()
+          {:ok, _} ->
+            portfolio |> Portfolio.close_position(symbol) |> event_loop()
 
           :error ->
             Logger.error("NO position found to close for #{symbol}")
