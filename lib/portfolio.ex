@@ -2,18 +2,42 @@ defmodule Portfolio do
   @moduledoc """
   Portfolio holds the positions of the platform.
   """
-  @type t :: Map
+  require Logger
+  @behaviour Access
+  @type t :: %Portfolio{capital: float(), equity: float(), positions: Map}
+  defstruct [:capital, :equity, :positions]
 
-  @spec new() :: Portfolio.t()
-  def new do
-    %{}
+  @spec new(float()) :: %__MODULE__{
+          capital: float(),
+          equity: float(),
+          positions: Map
+        }
+  def new(capital) do
+    %__MODULE__{capital: capital, equity: 0.0, positions: %{}}
   end
 
   @spec add_position(Portfolio.t(), Position.t()) :: Portfolio.t()
-  def add_position(state, position) do
-    symbol = Map.get(position, :symbol)
-    Map.put(state, symbol, position)
+  def add_position(portfolio, position) do
+    case Map.fetch(position, :symbol) do
+      {:ok, symbol} ->
+        Logger.debug("Found #{symbol}")
+        new_positions = Map.put(portfolio[:positions], symbol, position)
+
+        %__MODULE__{
+          equity: portfolio[:equity],
+          capital: portfolio[:capital],
+          positions: new_positions
+        }
+
+      :error ->
+        Logger.error("No symbol found")
+        portfolio
+    end
   end
+
+  def fetch(term, key), do: Map.fetch(term, key)
+  def pop(data, key), do: Map.get(data, key)
+  def get_and_update(data, key, function), do: Map.get_and_update(data, key, function)
 end
 
 defmodule Position do
@@ -31,7 +55,7 @@ defmodule Position do
   end
 
   @type t :: %Position{
-          order_id: UUID.uuid4(),
+          order_id: UUID,
           symbol: String.t(),
           price: float(),
           qty: integer(),
