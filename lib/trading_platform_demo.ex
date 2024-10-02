@@ -25,14 +25,14 @@ defmodule TradingPlatform do
     receive do
       # Receive a buy event
       {:buy, symbol, qty} ->
-        Logger.info("Received BUY order #{symbol} #{qty} for $#{price}")
+        Logger.info("BUY #{symbol} #{qty} @ $#{price}")
         position = Position.new_position(symbol, price, qty, Position.Side.Long)
         updated_portfolio = Portfolio.add_position(portfolio, position)
         event_loop(updated_portfolio)
 
       # Receive a sell event
       {:sell, symbol, qty} ->
-        Logger.info("Received SELL order #{symbol} #{qty}")
+        Logger.info("SELL #{symbol} #{qty} @ $#{price}")
         position = Position.new_position(symbol, price, qty, Position.Side.Short)
         updated_portfolio = Portfolio.add_position(portfolio, position)
         event_loop(updated_portfolio)
