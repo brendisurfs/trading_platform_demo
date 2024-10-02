@@ -50,7 +50,6 @@ defmodule TradingPlatform do
         Logger.info("Received CLOSE order #{symbol} #{qty}")
 
         case Map.fetch(portfolio[:positions], symbol) do
-          # For now, we just pop. will implement full portfolio balancing.
           {:ok, _} ->
             portfolio |> Portfolio.close_position(symbol) |> event_loop()
 
@@ -77,3 +76,6 @@ send(pid, {:sell, "PTON", 100})
 send(pid, {:close, "PTON", 100})
 send(pid, {:buy, "NVDA", 150})
 send(pid, {:close, "SG", 230})
+Process.sleep(1000)
+send(pid, :stop)
+Process.sleep(1000)
