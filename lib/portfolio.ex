@@ -7,21 +7,36 @@ defmodule Portfolio do
 
   @behaviour Access
   defstruct [:capital, :equity, :positions]
-
   @type t :: %__MODULE__{capital: float(), equity: float(), positions: %{}}
 
   @doc """
-  creates a new Portfolio
+  creates a new Portfolio.
+
+  ## Parameters
+
+  `capital`: the starting capital allocated for this Portfolio (float).
+
+  ## Returns
+  A new Portfolio struct.
   """
   @spec new(capital :: float()) :: t()
+
   def new(capital) do
     %__MODULE__{capital: capital, equity: 0.0, positions: %{}}
   end
 
   @doc """
     adds a position to the Portfolio
+
+  ## Arguments 
+  `portfolio`: the Portfolio where the positions are held (Portfolio).
+  `position`: The new position we want to add to the Portfolio (Position).
+
+  ## Returns 
+  A new Portfolio struct with updated_positions.
   """
   @spec add_position(portfolio :: t(), position :: Position.t()) :: t()
+
   def add_position(portfolio, position) do
     symbol = position[:symbol]
     Logger.debug("#{symbol} order_id: #{position[:order_id]}")
@@ -29,8 +44,17 @@ defmodule Portfolio do
     %{portfolio | positions: new_positions}
   end
 
-  # TODO: Remove Position 
+  @doc """
+  Removes a position from the Portfolio.
+
+  ## Parameters:
+
+  `portfolio`: the Portfolio where the positions are held (Portfolio).
+  `symbol`: the ticker symbol belonging to the position we want to remove (String or atom).
+  """
   @spec remove_position(portfolio :: t(), symbol :: String.t()) :: term()
+
+  # TODO: Remove Position 
   def remove_position(portfolio, symbol) do
     IO.puts("Todo: remove position")
   end
@@ -58,11 +82,25 @@ defmodule Position do
           side: Side
         }
 
-  @type position_side :: :long | :short
-  @doc """
-  new makes a new order, adding an order_id (UUID) to it.
+  @typedoc """
+  defines the side our position is on.
   """
-  @spec new(String.t(), float(), integer(), position_side()) :: t()
+  @type side :: :long | :short
+
+  @spec new(symbol :: String.t(), price :: float(), qty :: integer(), side :: side()) :: t()
+  @doc """
+  Creates a new position.
+
+  ## Parameters:
+
+  * `symbol`: The stock symbol (atom or string).
+  * `price`: The price per share (float).
+  * `qty`: The quantity of shares (integer).
+  * `side`: The side of the trade, either :long or :short (atom).
+
+  ## Returns:
+  A new Position struct.
+  """
   def new(symbol, price, qty, side) do
     %__MODULE__{order_id: UUID.uuid4(), symbol: symbol, qty: qty, price: price, side: side}
   end
