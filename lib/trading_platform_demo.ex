@@ -1,23 +1,30 @@
 defmodule TradingPlatform do
-  require Logger
-  require Position
-  require Portfolio
-
   @moduledoc """
   TradingPlatformDemo is a demo if a trading platforms event loop.
   This is just to have fun with elixir, dont use this in production.
   """
+
+  require Logger
+  require Position
+  require Portfolio
+
   @type message ::
           {:buy, String.t(), integer()}
           | {:sell, String.t(), integer()}
           | {:close, String.t(), integer()}
           | :stop
 
+  @doc """
+  starts the main event loop
+  """
   def start() do
     Logger.info("started trading platform")
     Portfolio.new(50_000.0) |> event_loop()
   end
 
+  @doc """
+  handles the main event loop of receiving/closing orders
+  """
   @spec event_loop(Portfolio.t()) :: :ok
   def event_loop(portfolio) do
     price = Enum.random(8..12)
@@ -26,7 +33,7 @@ defmodule TradingPlatform do
       # Receive a buy event
       {:buy, symbol, qty} ->
         Logger.info("BUY #{symbol} #{qty} @ $#{price}")
-        new_position = Position.new(symbol, price, qty, Position.Side.Long)
+        new_position = Position.new(symbol, price, qty, :long)
 
         portfolio
         |> Portfolio.add_position(new_position)
@@ -35,7 +42,8 @@ defmodule TradingPlatform do
       # Receive a sell event
       {:sell, symbol, qty} ->
         Logger.info("SELL #{symbol} #{qty} @ $#{price}")
-        new_position = Position.new(symbol, price, qty, Position.Side.Short)
+
+        new_position = Position.new(symbol, price, qty, :short)
 
         portfolio
         |> Portfolio.add_position(new_position)
