@@ -38,25 +38,6 @@ defmodule Portfolio do
   end
 
   @doc """
-    adds a position to the Portfolio
-
-  ## Arguments 
-  `portfolio`: the Portfolio where the positions are held (Portfolio).
-  `position`: The new position we want to add to the Portfolio (Position).
-
-  ## Returns 
-  A new Portfolio struct with updated_positions.
-  """
-  @spec add_position(portfolio :: t(), position :: Position.t()) :: t()
-
-  def add_position(portfolio, position) do
-    symbol = position[:symbol]
-    Logger.debug("#{symbol} order_id: #{position[:order_id]}")
-    new_positions = Map.put(portfolio[:positions], symbol, position)
-    %{portfolio | positions: new_positions}
-  end
-
-  @doc """
   "Closes" a position in Portfolio.
 
   ## Parameters:
