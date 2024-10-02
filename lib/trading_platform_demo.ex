@@ -1,24 +1,3 @@
-defmodule Position do
-  @moduledoc """
-  defines a position within our portfolio.
-  """
-  @type t :: %Position{symbol: String.t(), price: float(), qty: integer()}
-
-  defstruct [:symbol, :price, :qty]
-end
-
-defmodule Portfolio do
-  @moduledoc """
-  Portfolio holds the positions of the platform.
-  """
-  @type t :: %Position{}
-
-  @spec add_position(Portfolio.t(), String.t(), Position.t()) :: Portfolio.t()
-  def add_position(state, symbol, position) do
-    Map.put(state, symbol, position)
-  end
-end
-
 defmodule TradingPlatform do
   require Logger
 
@@ -28,7 +7,7 @@ defmodule TradingPlatform do
   """
   def start() do
     Logger.info("started trading platform")
-    init_state = %{}
+    init_state = Portfolio.new()
     event_loop(init_state)
   end
 
