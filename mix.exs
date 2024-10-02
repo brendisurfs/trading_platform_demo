@@ -21,7 +21,7 @@ defmodule TradingPlatformDemo.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:typed_struct, "~> 0.3.0"}
+      {:uuid, "~> 1.1"}
     ]
   end
 end
